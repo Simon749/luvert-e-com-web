@@ -13,11 +13,11 @@ function addToCart(productCard) {
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        cartItems.push({ 
+        cartItems.push({
             name,
             price,
             quantity: 1,
-            Image: imgSrc,
+            image: imgSrc,
         });
     }
     updateLocalStorage();
@@ -40,12 +40,53 @@ function displayCartItems() {
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         cartItem.innerHTML = ` 
-        
-        `
-    })
+         <img src="${item.image}" alt="${item.name}">
+    <div class="cart-title-price">
+        <div class="cart-item-title">${item.name}</div>
+        <div class="cart-item-price">$${itemTotal.toFixed(2)}</div>
+    </div>
+
+    <div class="quantity-controls">
+     <button onclick="changeQuantity('${item.name}', -1)">
+        <i class="ri-subtract-line"></i>
+     </button> 
+
+     <input
+      type="text"
+      name=""
+      class="cart-item-quantity"
+      value="${item.quantity}"
+      min="1"
+      onchange="updateQuantity('${item.name}', this.value)"
+      readonly
+      >
+
+      <button onclick="changeQuantity('${item.name}',1)">
+        <i class="ri-add-line"></i>
+     </button>   
+    </div>
+
+    <div class="remove-from-cart" onclick="removeItem('${item.name}')">
+        <i class="ri-delete-bin-line"></i>
+    </div>
+        `;
+        cartContainer.appendChild(cartItem);
+    });
+
+    if (TotalElement) {
+        TotalElement.textContent = `Total: $${total.toFixed(2)}`;
+    }
 }
 
 //save cart in localstorage
 function updateLocalStorage() {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
 }
+
+
+// load cart on page load 
+window.onload = function () {
+    if (document.getElementById('cartItems')) {
+        displayCartItems();
+    }
+};
