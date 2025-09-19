@@ -22,6 +22,7 @@ function addToCart(productCard) {
     }
     updateLocalStorage();
     updateCartCount();
+    showToast(`${name} add to cart`);
 }
 
 
@@ -126,4 +127,40 @@ window.onload = function () {
     if (document.getElementById('cartItems')) {
         displayCartItems();
     }
+    createToastContainer();
 };
+
+
+// Toast notification 
+function createToastContainer() {
+    if (document.getElementById('toast-container')) return;
+
+    const toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    toastContainer.className = 'toast-container';
+    document.body.appendChild(toastContainer);
+}
+
+function showToast(message) {
+    const toast = document.createElement('div')
+    toast.className = 'toast';
+    toast.textContent = message;
+
+    const container = document.getElementById('toast-container')
+    container.appendChild(toast);
+
+    // show animation 
+    setTimeout(() => {
+        toast.classList.add('toast-show');
+    }, 100);
+
+    // hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('toast-show');
+        setTimeout(() => {
+            if (container.contains(toast)) {
+                container.removeChild(toast);
+            }
+        }, 300);
+        }, 3000);
+    }
