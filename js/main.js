@@ -21,6 +21,27 @@ function addToCart(productCard) {
         });
     }
     updateLocalStorage();
+    updateCartCount();
+}
+
+
+//remove frpom cart
+function removeItem(name) {
+    cartItems = cartItems.filter((item) => item.name !== name);
+    updateLocalStorage();
+    updateCartCount();
+    if (document.getElementById('cartItems')) {
+        displayCartItems();
+    }
+}
+
+//update cart count icon 
+function updateCartCount() {
+    const countElement = document.getElementById('cart-count');
+    const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+    if (countElement) {
+        countElement.textContent = itemCount;
+    }
 }
 
 //Display cart items
@@ -41,40 +62,55 @@ function displayCartItems() {
         cartItem.className = 'cart-item';
         cartItem.innerHTML = ` 
          <img src="${item.image}" alt="${item.name}">
-    <div class="cart-title-price">
-        <div class="cart-item-title">${item.name}</div>
-        <div class="cart-item-price">$${itemTotal.toFixed(2)}</div>
-    </div>
+         <div class="cart-title-price">
+         <div class="cart-item-title">${item.name}</div>
+         <div class="cart-item-price">$${itemTotal.toFixed(2)}</div>
+         </div>
 
-    <div class="quantity-controls">
-     <button onclick="changeQuantity('${item.name}', -1)">
-        <i class="ri-subtract-line"></i>
-     </button> 
+         <div class="quantity-controls">
+         <button onclick="changeQuantity('${item.name}', -1)">
+         <i class="ri-subtract-line"></i>
+         </button> 
 
-     <input
-      type="text"
-      name=""
-      class="cart-item-quantity"
-      value="${item.quantity}"
-      min="1"
-      onchange="updateQuantity('${item.name}', this.value)"
-      readonly
-      >
+         <input
+         type="text"
+         name=""
+         class="cart-item-quantity"
+         value="${item.quantity}"
+         min="1"
+         onchange="updateQuantity('${item.name}', this.value)"
+         readonly
+         />
 
-      <button onclick="changeQuantity('${item.name}',1)">
-        <i class="ri-add-line"></i>
-     </button>   
-    </div>
+         <button onclick="changeQuantity('${item.name}',1)">
+         <i class="ri-add-line"></i>
+         </button>   
+         </div>
 
-    <div class="remove-from-cart" onclick="removeItem('${item.name}')">
-        <i class="ri-delete-bin-line"></i>
-    </div>
+         <div class="remove-from-cart" onclick="removeItem('${item.name}')">
+         <i class="ri-delete-bin-line"></i>
+         </div>
         `;
         cartContainer.appendChild(cartItem);
     });
-
+ 
     if (TotalElement) {
         TotalElement.textContent = `Total: $${total.toFixed(2)}`;
+    }
+}
+
+//quantity change
+function changeQuantity(name, delta) {
+    const item = cartItems.find((item) => item.name === name);
+    if (item) {
+        item.quantity += delta;
+        if (item.quantity <=0) {
+            removeItem(name);
+        } else {
+            updateLocalStorage();
+            updateCartCount();
+            displayCartItems();
+        }
     }
 }
 
@@ -86,6 +122,7 @@ function updateLocalStorage() {
 
 // load cart on page load 
 window.onload = function () {
+    updateCartCount();
     if (document.getElementById('cartItems')) {
         displayCartItems();
     }
