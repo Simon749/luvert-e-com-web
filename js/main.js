@@ -22,7 +22,7 @@ function addToCart(productCard) {
     }
     updateLocalStorage();
     updateCartCount();
-    showToast(`${name} add to cart`);
+    showToast(`${name} added to cart`);
 }
 
 
@@ -151,12 +151,12 @@ function showToast(message) {
 
     // show animation 
     setTimeout(() => {
-        toast.classList.add('toast-show');
+        toast.classList.add('show');
     }, 100);
 
     // hide after 3 seconds
     setTimeout(() => {
-        toast.classList.remove('toast-show');
+        toast.classList.remove('show');
         setTimeout(() => {
             if (container.contains(toast)) {
                 container.removeChild(toast);
